@@ -3,8 +3,8 @@
 SAMPLE
 ----------------------------------------
 
-Challenge: Write function named test that returns the string "This Works!". 
-Solution: This one has already been complete for you. 
+Challenge: Write function named test that returns the string "This Works!".
+Solution: This one has already been complete for you.
 
 */
 
@@ -24,13 +24,17 @@ Write function named sum that will take an array of numbers and return the sum o
 
 Example: if you pass it [1,2,3] then it should return 6 (which is 1 + 2 + 3)
 */
+var numbers = [1,2,3];
 
+function sum(array) {
+  var output = 0;
+  for (var i = 0; i < array.length; i++) {
+    output += array[i];
+  }
+  return output;
+};
 
-
-
-
-
-
+console.log(sum(numbers));
 
 
 /*
@@ -42,9 +46,15 @@ Write function named doubleNumbers that will take an array of numbers and return
 
 Example: if you pass it [1,2,3] then it should return [2,4,6]
 */
+function doubleNumbers(array) {
+  var output = [];
+  for (var i = 0; i < array.length; i++) {
+    output.push(array[i] * 2)
+  }
+  return output;
+}
 
-
-
+console.log(doubleNumbers(numbers));
 
 
 
@@ -64,9 +74,13 @@ Examples:
 - if you call multiplyNumbers([1,2,3], 0) you'd get [0,0,0]
 - if you call multiplyNumbers([1,2,3], 5) you'd get [5,10,15]
 */
+function multiplyNumbers(array, num) {
+  return array.map(function(item) {
+    return item * num;
+  }, 0);
+}
 
-
-
+console.log(multiplyNumbers(numbers));
 
 
 
@@ -83,9 +97,15 @@ Write function named doubleLetters that will take a string and double every lett
 Example: if you pass it "abc" then it should return "aabbcc"
 */
 
+function doubleLetters(string) {
+  var array = string.split("");
+  var newString = array.map(function(i) {
+    return i + i;
+  }, []);
+  return newString.join("");
+};
 
-
-
+console.log("abc");
 
 
 
@@ -103,15 +123,14 @@ Example: if you pass it ["a", "b", "c"] and ["d", "e", "f"] then it should retur
 
 NOTE: you can assume each input will be the same length
 */
-
-
-
-
-
-
-
-
-
+function interleave(array1, array2) {
+  var array3 = [];
+  for (var i = 0; i < array2.length; i++) {
+    array3.push(array1[i]);
+    array3.push(array2[i]);
+  }
+  return array3;
+}
 
 
 /*
@@ -124,9 +143,16 @@ Write function named createRange that will take a number and a default value and
 Example: if you pass it 4 and "Hello" then it should return ["Hello", "Hello", "Hello", "Hello"]
 */
 
+function createRange(number, value) {
+  var output = [];
+  output.length = number;
+  for (var i = 0; i < output.length; i++) {
+    output[i] = value;
+  }
+  return output;
+}
 
-
-
+console.log(createRange(4, "Hello"));
 
 
 
@@ -143,12 +169,16 @@ Example:
 If you pass it ["quick", "brown", "fox"] then it should return { "quick": 0, "brown": 1, "fox": 2 }
 */
 
+function flipArray(array) {
+  var object = {};
+  for (var i = 0; i < array.length; i++) {
+    object[array[i]] = i;
+  }
+  console.log(object);
+  return object;
+}
 
-
-
-
-
-
+flipArray(["quick", "fox"])
 
 /*
 ----------------------------------------
@@ -162,8 +192,12 @@ Example:
 If you pass it [[2014, "Horse"], [2015, "Sheep"]] then it should return { 2014: "Horse", 2015: "Sheep" }
 
 */
+function arraysToObject(array){
 
+  var object = {};
 
+  return object;
+}
 
 
 
@@ -794,4 +828,4 @@ If you pass {1999: 4036, 2000: 7654} and 4036, it should return true
 
 
 
-// 
+//
