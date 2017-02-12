@@ -157,10 +157,10 @@ If you pass it ["quick", "brown", "fox"] then it should return { "quick": 0, "br
 */
 
 function flipArray(array) {
-    var object = {};
-    for (var i = 0; i < array.length; i++) {
-        object[array[i]] = i;
-    }
+    var object = array.reduce(function(output, value, key) {
+        output[value] = key;
+        return output;
+    }, {});
     console.log(object);
     return object;
 }
@@ -453,7 +453,7 @@ If you pass 0,2 it should return false because the only number between 0 and 2 i
 If you pass 0,6 it should return true because between 0 and six (the numbers 1,2,3,4,5) there are three odds - 1, 3 and 5
 */
 function threeOdds(number1, number2) {
-  // Can reduce or filter be used here?
+    // Can reduce or filter be used here?
     var numArray = [];
     for (var i = number1; i < number2; i++) {
         numArray.push(i);
@@ -538,17 +538,11 @@ If you pass 4 it should return 24 since that's 4 * 3 * 2 * 1
 If you pass 5 it should return 120 since that's 5 * 4 * 3 * 2 * 1
 */
 function factorial(number) {
-  // Can reduce or filter be used here?
-    var array = [];
-    for (var i = 0; i <= number; i++) {
-        array.push(i);
+    var output = 1;
+    for (var i = 1; i <= number; i++) {
+        output *= i;
     }
-    var output = array.filter(function(value) {
-        return value !== 0;
-    }, []).reduce(function(result, value) {
-        return result *= value;
-    }, 1);
-    return output
+    return output;
 }
 
 console.log(factorial(5));
@@ -567,11 +561,15 @@ Example:
 If you pass 1 it should return [1]
 If you pass 3 it should return [1,2,3]
 */
+function arrayOfNumbers(number) {
+    var output = [];
+    for (var i = 1; i <= number; i++) {
+        output.push(i);
+    }
+    return output
+}
 
-
-
-
-
+console.log(arrayOfNumbers(10));
 /*
 ----------------------------------------
 CHALLENGE
@@ -583,13 +581,27 @@ Example:
 
 If you pass 1,4 it should return {"1": "odd", "2": "even", "3": "odd", "4": "even"}
 */
+function evenOdd(num1, num2) {
+    var array = [];
+    for (var i = num1; i <= num2; i++) {
+        array.push(i);
+    };
+    var object = array.reduce(function(result, current) {
+        if (current % 2 === 0) {
+            result[current] = "even"
+        } else {
+            result[current] = "odd"
+        }
+        return result;
+    }, {});
+    if (num2 === 0) {
+        return {}
+    } else {
+        return object;
+    }
+}
 
-
-
-
-
-
-
+console.log(evenOdd(1, 5));
 
 
 /*
@@ -603,14 +615,19 @@ Example:
 
 If you pass 2,"d" it should return {"d": true, "dd": true}
 */
+function growingKeys(number, string) {
+    var array = [];
+    for (var i = 1; i <= number; i++) {
+        array.push(string.repeat(i));
+    }
+    var object = array.reduce(function(result, current, index) {
+        result[current] = true;
+        return result;
+    }, {})
+    return object;
+}
 
-
-
-
-
-
-
-
+console.log(growingKeys(3, "A"));
 
 /*
 ----------------------------------------
@@ -624,14 +641,18 @@ Example:
 If you pass [1,1], 1 it should return true
 If you pass [1,2], 1 it should return false
 */
+function every(array, value) {
+    var compare = array.filter(function(item) {
+        return item === value;
+    }, []);
+    if (compare.length === array.length) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-
-
-
-
-
-
-
+console.log(every([1, 1], 1));
 /*
 ----------------------------------------
 CHALLENGE
@@ -644,12 +665,18 @@ Example:
 If you pass [1,2], 1 it should return true
 If you pass [3,2], 1 it should return false
 */
+function some(array, value) {
+    var find = array.filter(function(item) {
+        return item === value;
+    }, []);
+    if (find[0] === value) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-
-
-
-
-
+console.log(some([1, 2, 3], 2));
 
 
 /*
@@ -664,15 +691,28 @@ Example:
 If you pass ["Sue", "Will"] it should return "Sue and Will"
 If you pass ["Sue", "Will", "Rachel"] it should return "Sue, Will and Rachel"
 */
+function toSentence(array) {
+    // Take care of cancellations first
+    if (array.length === 0) {
+        return ""
+    }
+    // Cut off the last two, insert "and", reduce to a string
+    var last = array.splice(-2);
+    last.splice(-1, 0, " and ");
+    last = last.reduce(function(result, current) {
+        result += current;
+        return result;
+    }, "")
+    // Inserting the commas & reduce to a string
+    var first = array.reduce(function(result, current) {
+        result += current.concat(", ")
+        return result;
+    }, "");
+    // Concatenating first & last
+    return first.concat(last);
+}
 
-
-
-
-
-
-
-
-
+console.log(toSentence(["puppy", "monkey", "baby"]));
 /*
 ----------------------------------------
 CHALLENGE
@@ -685,13 +725,15 @@ Example:
 If you pass ["Sue", "Will"] it should return "SW"
 If you pass ["Java", Script", "Object", "Notation"] it should return "JSON"
 */
+function acronym(array) {
+    var string = array.reduce(function(result, current) {
+        result.push(current.charAt(0));
+        return result;
+    }, []).join("");
+    return string;
+}
 
-
-
-
-
-
-
+console.log(acronym(["Soprano", "Alto", "Tenor", "Bass"]));
 
 /*
 ----------------------------------------
@@ -704,15 +746,18 @@ Example:
 
 If you pass [0,-3,2,5] it should return -3
 */
+function min(array) {
+    if (array.length === 0) {
+        return undefined;
+    }
+    var output = array.sort(function(a, b) {
+        return a - b;
+    }, [])
+    console.log("output", output);
+    return output[0];
+}
 
-
-
-
-
-
-
-
-
+console.log(min([-1, 30, 21, -100]));
 /*
 ----------------------------------------
 CHALLENGE
@@ -725,13 +770,21 @@ Example:
 If you pass [{id: 1, name: "Joe"}, {id: 2, name: "Sue"}] it should return {1: {id: 1, name: "Joe"}, 2: {id: 2, name: "Sue"}}
 
 */
+function index(array, prop) {
+    var object = array.reduce(function(obj, key, i, arr) {
+        obj[arr[i][prop]] = key
+        return obj;
+    }, {})
+    return object;
+}
 
-
-
-
-
-
-
+console.log(index([{
+    id: 1,
+    name: "Joe"
+}, {
+    id: 2,
+    name: "Sue"
+}], "id"));
 
 /*
 ----------------------------------------
@@ -744,14 +797,18 @@ Example:
 
 If you pass {id: 1, name: "Joe"} it should return {1: "id", Joe: "name"}
 */
+function invert(object) {
+    var newObject = {}
+    for (var key in object) {
+        newObject[object[key]] = key
+    }
+    return newObject
+}
 
-
-
-
-
-
-
-
+console.log(invert({
+    id: 1,
+    name: "Joe"
+}));
 /*
 ----------------------------------------
 CHALLENGE
@@ -766,14 +823,17 @@ Example:
 
 If you pass {"contract": "foo"}, "Fred" it should return {"contract-signed": "foo - Fred"}
 */
+function addSignature(name, object) {
+    var newObject = {}
+    for (var key in object) {
+        newObject[key.concat("-signed")] = object[key].concat(" - " + name)
+    }
+    return newObject
+}
 
-
-
-
-
-
-
-
+console.log(addSignature({
+    "contract": "foo"
+}, "Fred"));
 /*
 ----------------------------------------
 CHALLENGE
@@ -785,14 +845,18 @@ Example:
 
 If you pass {name: "Will", age: 24} it should return ["name - will", "age - 24"]
 */
+function pairs(object) {
+    var stringArray = []
+    for (var key in object) {
+        stringArray.push(key.concat(" - " + object[key]))
+    }
+    return stringArray
+}
 
-
-
-
-
-
-
-
+console.log(pairs({
+    name: "Will",
+    age: 24
+}));
 /*
 ----------------------------------------
 CHALLENGE
@@ -804,14 +868,18 @@ Example:
 
 If you pass {a: 1, b: 2} it should return 3
 */
+function sumValues(object) {
+    var sum = 0
+    for (var key in object) {
+        sum += object[key]
+    }
+    return sum;
+}
 
-
-
-
-
-
-
-
+console.log(sumValues({
+    a: 1,
+    b: 2
+}));
 /*
 ----------------------------------------
 CHALLENGE
@@ -823,14 +891,20 @@ Example:
 
 If you pass {1999: 4036, 2000: 7654} it should return '2000'
 */
+function biggestProperty(object) {
+    var largest = []
+    for (var key in object) {
+        largest.push(key)
+    }
+    largest.sort()
+    largest.reverse()
+    return largest[0]
+}
 
-
-
-
-
-
-
-
+console.log(biggestProperty({
+    1999: 4036,
+    2000: 7654
+}));
 
 /*
 ----------------------------------------
@@ -843,15 +917,19 @@ Example:
 
 If you pass {1999: 4036, 2000: 7654} and 4036, it should return '1999'
 */
+function keyForValue(object, value) {
+    for (var key in object) {
+        if (object[key] === value) {
+            var output = key
+        }
+    }
+    return output
+}
 
-
-
-
-
-
-
-
-
+console.log(keyForValue({
+    1999: 4036,
+    2000: 7654
+}, 4036));
 /*
 ----------------------------------------
 CHALLENGE
@@ -863,13 +941,18 @@ Example:
 
 If you pass {1999: 4036, 2000: 7654} and 4036, it should return true
 */
+function containsValue(object, value) {
+    var output = false;
+    for (var key in object) {
+        if (object[key] === value) {
+            output = true;
+        }
+    }
+    return output
+}
 
-
-
-
-
-
-
-
-
+console.log(containsValue({
+    1999: 4036,
+    2000: 7654
+}, 4036));
 //
